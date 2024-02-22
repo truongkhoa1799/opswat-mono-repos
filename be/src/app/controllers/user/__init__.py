@@ -1,7 +1,7 @@
 import functools
 from typing import Annotated
 
-from fastapi import APIRouter, Form, Query, Depends, HTTPException, Header
+from fastapi import APIRouter, Form, Query, Depends, HTTPException, Header, Path
 from starlette.middleware import Middleware
 
 from src.app.controllers.base import BaseProcess
@@ -46,15 +46,10 @@ async def get_users(
     return process.execute()
 
 
-@router.delete("/")
+@router.delete("/{email}")
 async def remove_users(
     current_user: Annotated[UserResponse | None, Depends(AuthMiddleware.get_current_user)],
-    email: str = Query(
-        default='',
-        description="email",
-        max_length=255,
-        regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    )
+    email: str = Path(description="email", max_length=255, regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 ):
     params = DeleteUserParams(email=email)
     process = BaseProcess(DeleteUserController(params), current_user)
