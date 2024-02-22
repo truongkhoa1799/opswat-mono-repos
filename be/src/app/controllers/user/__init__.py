@@ -1,13 +1,11 @@
-import functools
 from typing import Annotated
 
 from fastapi import APIRouter, Form, Query, Depends, HTTPException, Header, Path
-from starlette.middleware import Middleware
 
 from src.app.controllers.base import BaseProcess
 from src.app.controllers.user.create_user import CreateUserController
 from src.app.controllers.user.get_users import GetUsersController
-from src.app.controllers.user.remove_user import DeleteUserController
+from src.app.controllers.user.delete_user import DeleteUserController
 from src.app.dtos.user import CreateUserParams, GetUsersParams, UserResponse, DeleteUserParams
 from src.app.middlewares.auth import AuthMiddleware
 

@@ -86,6 +86,6 @@ class UserResponse(BaseModel):
             fullname=model.fullname,
             hashed_password=model.hashed_password,
             salt=model.salt,
-            created_at=get_time_str(model.created_at, Format.DATE),
-            updated_at=get_time_str(model.updated_at, Format.DATE),
+            created_at=get_time_str(model.created_at, Format.DATE_TIME),
+            updated_at=get_time_str(model.updated_at, Format.DATE_TIME),
         )

@@ -11,9 +11,6 @@ from .interface import UserRepositoryInterface
 
 
 class UserPostgresRepository(BasePostgres[UserModel, CreateUserEntity], UserRepositoryInterface):
-    def get_user_by_email(self, email: str) -> UserModel | None:
-        pass
-
     def __init__(self):
         self.logger = LoggerFactory.get_logger()
         super().__init__(UserModel)

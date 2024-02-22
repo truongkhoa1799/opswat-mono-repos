@@ -40,14 +40,13 @@ class BasePostgres(BasePostgresInterface, Generic[Model, CreateEntity]):
 
     def get(self, id: Any) -> Optional[Model]:
         with Session(self.engine) as session:
-            query = session.query(self.model).filter(self.model.id == id)
-            result = query.first()
+            result = session.query(self.model).get(id)
             return result
 
     def create(self, obj_in: CreateEntity) -> Model:
         with Session(self.engine) as session:
             obj_in_data = jsonable_encoder(obj_in)
-            db_obj = self.model(**obj_in_data)  # type: ignore
+            db_obj = self.model(**obj_in_data)
             session.add(db_obj)
             session.commit()
             session.refresh(db_obj)
