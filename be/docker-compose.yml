@@ -1,0 +1,16 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_container
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=opswat
+      - POSTGRES_PASSWORD=opswat
+      - POSTGRES_DB=opswat_interview
+    volumes:
+      - mysql_data:/var/lib/postgresql/data
+
+volumes:
+  mysql_data:
