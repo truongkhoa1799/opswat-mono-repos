@@ -1,14 +1,11 @@
 from pydantic import BaseModel
 
-from src.app.controllers.base import BaseController, BaseControllerWithRole
+from src.app.controllers.base import BaseControllerWithRole
 from src.app.dtos.article import GetArticlesParams, ArticleResponse
-from src.app.dtos.user import GetUsersParams, UserResponse
 from src.app.presenters.article import ArticlesPresenter
 from src.app.presenters.base import BasePresenter
-from src.app.presenters.user import UsersPresenter
-from src.common.messages import UserErrMsg, ArticleErrMsg
+from src.common.messages import ArticleErrMsg
 from src.domain.services.article import ArticleServices
-from src.domain.services.user import UserServices
 from src.insfra.logger import LoggerFactory
 
 

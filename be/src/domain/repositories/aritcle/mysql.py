@@ -20,9 +20,8 @@ class ArticlePostgresRepository(BasePostgres[ArticleModel, CreateArticleEntity],
             with Session(self.engine) as session:
                 query = select(self.model).offset(params.offset).limit(params.limit)
                 result = session.exec(query).all()
-
-                users = [user for user in result]
-                return users
+                articles = [article for article in result]
+                return articles
 
         except Exception as e:
             self.logger.log_error(e.__str__())

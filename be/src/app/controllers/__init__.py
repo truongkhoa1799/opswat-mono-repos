@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from .auth import router as auth_router
 from .user import router as users_router
 from .article import router as articles_router
+from .reaction import router as reactions_router
 
 api_router = router = APIRouter(
     prefix="/api",
@@ -11,3 +12,4 @@ api_router = router = APIRouter(
 api_router.include_router(auth_router)
 api_router.include_router(users_router)
 api_router.include_router(articles_router)
+api_router.include_router(reactions_router)

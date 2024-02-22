@@ -29,10 +29,11 @@ async def get_articles(
 
 @router.post("/")
 async def create_article(
+    current_user: Annotated[UserResponse | None, Depends(AuthMiddleware.get_current_user)],
     title: Annotated[str, Form()],
     body: Annotated[str, Form()],
 ):
-    params = CreateArticleParams(title=title, body=body)
+    params = CreateArticleParams(title=title, body=body, created_by=current_user.id)
     process = BaseProcess(CreateArticleController(params))
     return process.execute()
 

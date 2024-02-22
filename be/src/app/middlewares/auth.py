@@ -1,4 +1,5 @@
 import functools
+import re
 from http import HTTPStatus, HTTPMethod
 from typing import Annotated
 
@@ -21,8 +22,8 @@ from src.common.messages import UserErrMsg
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 WHITELIST_URLS = [
-    {"method": "post", "path": "/api/auth/login"},
-    {"method": "post", "path": "/api/users"}
+    {"method": "post", "pattern": r"^/api/auth/login$"},
+    {"method": "post", "pattern": r"^/api/users$"},
 ]
 
 
@@ -77,15 +78,21 @@ class AuthMiddleware:
 
     @staticmethod
     def is_allow_forward(path, method) -> bool:
+        def check_path(pattern: str, checked_path: str) -> bool:
+            return bool(re.match(pattern, checked_path))
+
         def check(acc, item):
-            return acc or (item["method"] == method and item["path"] == path)
+            return acc or (item["method"] == method and check_path(item["pattern"], path))
 
         # Use reduce to check if the condition is True for any item in the list
         return functools.reduce(check, WHITELIST_URLS, False)
 
     @staticmethod
-    async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> UserResponse:
+    async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> UserResponse | None:
         try:
+            if token is None:
+                raise UnauthorizedException(message="Could not validate credentials")
+
             user_response = CryptoHelper.decode_token(token)
             if user_response is None:
                 raise UnauthorizedException(message="Could not validate credentials")

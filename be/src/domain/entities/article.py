@@ -6,7 +6,6 @@ from src.domain.entities.base import BaseEntity
 class Article(BaseEntity):
     title: str
     body: str
-    favourite_count: int
 
 
 class ArticleEntity(Article):
@@ -14,7 +13,7 @@ class ArticleEntity(Article):
 
 
 class CreateArticleEntity(ArticleEntity):
-    pass
+    created_by: int
 
 
 class UpdateArticleEntity(ArticleEntity):

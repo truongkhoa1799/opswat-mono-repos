@@ -16,7 +16,10 @@ class UpdateArticleController(BaseControllerWithRole):
         self.article_services = ArticleServices()
 
     def is_valid(self, user: BaseModel) -> bool:
-        # TODO: Check owners of article
+        article_res = self.article_services.get_article_by_id(self.params.id)
+        if article_res is None or article_res.created_by != user.id:
+            return False
+
         return True
 
     def execute(self) -> BasePresenter[ArticlePresenter]:

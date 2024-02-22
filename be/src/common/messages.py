@@ -14,3 +14,7 @@ class ArticleErrMsg(Enum):
     FAIL_UPDATE_ARTICLE = 'fail_update_article'
     FAIL_GET_ARTICLES = 'fail_get_articles'
     FAIL_DELETE_ARTICLE = 'fail_delete_article'
+
+    FAIL_REACT_ARTICLE = 'fail_react_article'
+    ARTICLE_NOT_EXIST = 'article_not_exist'
+
