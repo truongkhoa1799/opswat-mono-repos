@@ -13,19 +13,20 @@ from src.insfra.logger import LoggerFactory
 
 
 class LoginController(BaseController):
-    def __init__(self):
+    def __init__(self, params: OAuth2PasswordRequestForm):
         self.config = Config()
+        self.params = params
         self.logger = LoggerFactory.get_logger()
         self.user_services = UserServices()
 
-    def execute(self, params: OAuth2PasswordRequestForm) -> BasePresenter[AuthPresenter]:
+    def execute(self) -> BasePresenter[AuthPresenter]:
         try:
-            user_res = self.user_services.get_user_by_username(params.username)
+            user_res = self.user_services.get_user_by_username(self.params.username)
             if user_res is None:
                 return BasePresenter.forbidden()
 
             is_authenticated = CryptoHelper.check_password(
-                params.password,
+                self.params.password,
                 user_res.hashed_password,
                 user_res.salt
             )

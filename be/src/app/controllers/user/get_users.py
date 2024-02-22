@@ -10,16 +10,17 @@ from src.insfra.logger import LoggerFactory
 
 
 class GetUsersController(BaseControllerWithRole):
-    def __init__(self):
+    def __init__(self, params: GetUsersParams):
+        self.params = params
         self.logger = LoggerFactory.get_logger()
         self.user_services = UserServices()
 
     def is_valid(self, user: UserResponse) -> bool:
         return True
 
-    def execute(self, params: GetUsersParams) -> BasePresenter[UsersPresenter]:
+    def execute(self) -> BasePresenter[UsersPresenter]:
         try:
-            user_responses = self.user_services.get_users(params)
+            user_responses = self.user_services.get_users(self.params)
             if user_responses is not None:
                 presenters = UsersPresenter.from_dto(user_responses)
                 return BasePresenter.success(presenters)

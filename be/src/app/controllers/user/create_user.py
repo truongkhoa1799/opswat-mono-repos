@@ -8,13 +8,14 @@ from src.insfra.logger import LoggerFactory
 
 
 class CreateUserController(BaseController):
-    def __init__(self):
+    def __init__(self, params: CreateUserParams):
+        self.params = params
         self.logger = LoggerFactory.get_logger()
         self.user_services = UserServices()
 
-    def execute(self, params: CreateUserParams) -> BasePresenter[UserPresenter]:
+    def execute(self) -> BasePresenter[UserPresenter]:
         try:
-            user_res = self.user_services.create_user(params)
+            user_res = self.user_services.create_user(self.params)
             if user_res is not None:
                 presenter = UserPresenter.from_dto(user_res)
                 return BasePresenter.success(presenter)

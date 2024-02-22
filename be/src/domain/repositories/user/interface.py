@@ -12,5 +12,9 @@ class UserRepositoryInterface(BasePostgresInterface[UserModel, CreateUserEntity]
         pass
 
     @abstractmethod
+    def get_user_by_email(self, email: str) -> UserModel | None:
+        pass
+
+    @abstractmethod
     def get_users(self, params: GetUsersParams) -> List[UserModel] | None:
         pass

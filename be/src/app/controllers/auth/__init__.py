@@ -14,8 +14,8 @@ router = APIRouter(
 
 @router.post("/login")
 async def login(params: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    process = BaseProcess(LoginController())
-    return process.execute(params)
+    process = BaseProcess(LoginController(params))
+    return process.execute()
 
 
 

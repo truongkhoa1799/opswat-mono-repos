@@ -11,6 +11,8 @@ from .interface import UserRepositoryInterface
 
 
 class UserPostgresRepository(BasePostgres[UserModel, CreateUserEntity], UserRepositoryInterface):
+    def get_user_by_email(self, email: str) -> UserModel | None:
+        pass
 
     def __init__(self):
         self.logger = LoggerFactory.get_logger()
@@ -20,6 +22,18 @@ class UserPostgresRepository(BasePostgres[UserModel, CreateUserEntity], UserRepo
         try:
             with Session(self.engine) as session:
                 query = select(self.model).where(self.model.username == username)
+                result = session.exec(query).first()
+                return result
+
+        except Exception as e:
+            self.logger.log_error(e.__str__())
+
+        return None
+
+    def get_user_by_email(self, email: str) -> UserModel | None:
+        try:
+            with Session(self.engine) as session:
+                query = select(self.model).where(self.model.email == email)
                 result = session.exec(query).first()
                 return result
 

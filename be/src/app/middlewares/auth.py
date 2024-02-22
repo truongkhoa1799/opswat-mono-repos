@@ -21,7 +21,8 @@ from src.common.messages import UserErrMsg
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 WHITELIST_URLS = [
-    {"method": "POST", "path": "/api/auth/login"}
+    {"method": "post", "path": "/api/auth/login"},
+    {"method": "post", "path": "/api/users"}
 ]
 
 
@@ -36,8 +37,9 @@ class AuthMiddleware:
             return
 
         headers = Headers(scope=scope)
-        path = scope.get("path")
-        method = scope.get("method")
+        path = str(scope.get("path")).rstrip("/").lower()
+        method = str(scope.get("method")).lower()
+
         if AuthMiddleware.is_allow_forward(path, method):
             await self.app(scope, receive, send)
             return

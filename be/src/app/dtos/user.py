@@ -12,6 +12,7 @@ class BaseUserParams(BaseModel):
         default=None,
         title="User email",
         alias='email',
+        max_length=255,
         pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     )
     username: str = Field(
@@ -53,6 +54,16 @@ class CreateUserParams(BaseUserParams):
 
 class GetUsersParams(BaseSearchParams):
     pass
+
+
+class DeleteUserParams(BaseModel):
+    email: str = Field(
+        default=None,
+        title="User email",
+        alias='email',
+        max_length=255,
+        pattern=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    )
 
 
 # -------------- Response --------------

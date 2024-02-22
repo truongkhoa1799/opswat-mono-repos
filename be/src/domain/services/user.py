@@ -1,6 +1,6 @@
 from typing import List
 
-from src.app.dtos.user import UserResponse, CreateUserParams, GetUsersParams
+from src.app.dtos.user import UserResponse, CreateUserParams, GetUsersParams, DeleteUserParams
 from src.common.crypto_helper import CryptoHelper
 from src.common.singleton import SingletonMeta
 from src.domain.entities.user import CreateUserEntity
@@ -58,3 +58,16 @@ class UserServices(metaclass=SingletonMeta):
             self.logger.log_error(e.__str__())
 
         return None
+
+    def delete_user(self, params: DeleteUserParams) -> bool:
+        try:
+            user_model = self.user_repos.get_user_by_email(params.email)
+            if user_model is None:
+                return False
+
+            self.user_repos.remove(user_model.id)
+            return True
+        except Exception as e:
+            self.logger.log_error(e.__str__())
+
+        return False

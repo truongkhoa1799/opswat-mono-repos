@@ -10,7 +10,7 @@ from src.common.messages import UserErrMsg
 
 class BaseController(ABC):
     @abstractmethod
-    def execute(self, params: BaseModel):
+    def execute(self):
         pass
 
 
@@ -30,11 +30,11 @@ class BaseProcess(Generic[Controller, Model]):
         self.controller = controller
         self.user = user
 
-    def execute(self, params: Model):
+    def execute(self):
         if hasattr(self.controller, 'is_valid'):
             if self.controller.is_valid(self.user):
-                return self.controller.execute(params)
+                return self.controller.execute()
             else:
                 return BasePresenter.forbidden(UserErrMsg.DO_NOT_AUTHORIZED.value)
         else:
-            return self.controller.execute(params)
+            return self.controller.execute()

@@ -27,7 +27,7 @@ class BasePostgresInterface(ABC, Generic[Model, CreateEntity]):
         pass
 
     @abstractmethod
-    def remove(self, id: int) -> Model:
+    def remove(self, id: int) -> None:
         pass
 
 
@@ -72,9 +72,9 @@ class BasePostgres(BasePostgresInterface, Generic[Model, CreateEntity]):
             session.refresh(db_obj)
             return db_obj
 
-    def remove(self, id: int) -> Model:
+    def remove(self, id: int) -> None:
         with Session(self.engine) as session:
             obj = session.query(self.model).get(id)
             session.delete(obj)
             session.commit()
-            return obj
+            return
