@@ -11,9 +11,10 @@ from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from starlette.datastructures import Headers
+from src.app.presenters.user import UserPresenter
 
 from src.app.dtos.user import UserResponse
-from src.app.middlewares.exceptions import HTTPException, UnauthorizedException
+from src.app.middlewares.exceptions import UnauthorizedException
 from src.app.presenters.base import BasePresenter
 from src.common import Config
 from src.common.crypto_helper import CryptoHelper
@@ -50,8 +51,8 @@ class AuthMiddleware:
             await response(scope, receive, send)
             return
 
-        user_response = CryptoHelper.decode_token(response)
-        if user_response is None:
+        user_presenter = CryptoHelper.decode_token(response)
+        if user_presenter is None:
             response = AuthMiddleware.create_unauthorized_response()
             await response(scope, receive, send)
             return
@@ -88,19 +89,19 @@ class AuthMiddleware:
         return functools.reduce(check, WHITELIST_URLS, False)
 
     @staticmethod
-    async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> UserResponse | None:
+    async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> UserPresenter | None:
         try:
             if token is None:
-                raise UnauthorizedException(message="Could not validate credentials")
+                raise UnauthorizedException(
+                    message="Could not validate credentials")
 
-            user_response = CryptoHelper.decode_token(token)
-            if user_response is None:
-                raise UnauthorizedException(message="Could not validate credentials")
+            user_presenter = CryptoHelper.decode_token(token)
+            if user_presenter is None:
+                raise UnauthorizedException(
+                    message="Could not validate credentials")
 
-            return user_response
+            return user_presenter
 
         except JWTError:
-            raise UnauthorizedException(message="Could not validate credentials")
-
-
-
+            raise UnauthorizedException(
+                message="Could not validate credentials")

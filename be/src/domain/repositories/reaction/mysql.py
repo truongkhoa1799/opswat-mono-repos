@@ -62,3 +62,17 @@ class ReactionPostgresRepository(BasePostgres[ReactionModel, CreateReactionEntit
 
         return False
 
+    def remove_by_article_id(self, article_id: int) -> bool | None:
+        try:
+            with Session(self.engine) as session:
+                statement = select(self.model).where(article_id == self.model.article_id)
+                model = session.exec(statement).first()
+                session.delete(model)
+                session.commit()
+
+            return True
+
+        except Exception as e:
+            self.logger.log_error(e.__str__())
+
+        return False

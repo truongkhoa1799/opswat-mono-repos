@@ -1,12 +1,13 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Form, Query, Depends, HTTPException, Header, Path
+from src.app.presenters.user import UserPresenter
 
 from src.app.controllers.base import BaseProcess
 from src.app.controllers.user.create_user import CreateUserController
 from src.app.controllers.user.get_users import GetUsersController
 from src.app.controllers.user.delete_user import DeleteUserController
-from src.app.dtos.user import CreateUserParams, GetUsersParams, UserResponse, DeleteUserParams
+from src.app.dtos.user import CreateUserParams, GetUsersParams, DeleteUserParams
 from src.app.middlewares.auth import AuthMiddleware
 
 router = APIRouter(
@@ -34,10 +35,8 @@ async def create_user(
 
 @router.get("/")
 async def get_users(
-    current_user: Annotated[UserResponse | None, Depends(AuthMiddleware.get_current_user)],
     limit: int = Query(10, description="limit", ge=0, lt=100),
     offset: int = Query(0, description="offset", ge=0, lt=100),
-
 ):
     params = GetUsersParams(limit=limit, offset=offset)
     process = BaseProcess(GetUsersController(params))
@@ -46,12 +45,10 @@ async def get_users(
 
 @router.delete("/{email}")
 async def remove_users(
-    current_user: Annotated[UserResponse | None, Depends(AuthMiddleware.get_current_user)],
-    email: str = Path(description="email", max_length=255, regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    current_user: Annotated[UserPresenter | None, Depends(AuthMiddleware.get_current_user)],
+    email: str = Path(description="email", max_length=255,
+                      regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 ):
     params = DeleteUserParams(email=email)
     process = BaseProcess(DeleteUserController(params), current_user)
     return process.execute()
-
-
-

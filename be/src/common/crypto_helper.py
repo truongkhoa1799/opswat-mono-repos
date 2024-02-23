@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 
 import bcrypt
 from jose import JWTError, jwt
+from src.app.presenters.user import UserPresenter
 
 from src.app.dtos.user import UserResponse
 from src.common import Config
@@ -26,10 +27,9 @@ class CryptoHelper:
         return compared_password == hashed_password
 
     @staticmethod
-    def create_access_token(data: UserResponse, expires_delta: timedelta | None = None):
+    def create_access_token(data: UserPresenter, expires_delta: timedelta | None = None):
         config = Config()
-        data = data.model_dump()
-        to_encode = data.copy()
+        to_encode = data.__dict__.copy()
 
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
@@ -46,16 +46,22 @@ class CryptoHelper:
         return encoded_jwt
 
     @staticmethod
-    def decode_token(token: str) -> UserResponse | None:
+    def decode_token(token: str) -> UserPresenter | None:
         config = Config()
         try:
-            payload = jwt.decode(token, config.get("SECRET_KEY"), algorithms=[config.get("ALGORITHM")])
+            payload = jwt.decode(token, config.get(
+                "SECRET_KEY"), algorithms=[config.get("ALGORITHM")])
             if payload is None:
                 return None
 
-            return UserResponse(**payload)
+            return UserPresenter(
+                id=payload.get("id"),
+                email=payload.get("email"),
+                username=payload.get("username"),
+                fullname=payload.get("fullname"),
+                created_at=payload.get("created_at"),
+                updated_at=payload.get("updated_at")
+            )
 
         except JWTError:
             return None
-
-

@@ -46,14 +46,41 @@ class UserServices(metaclass=SingletonMeta):
 
         return None
 
+    def get_user(self, user_id: int) -> UserResponse | None:
+        try:
+            model = self.user_repos.get(user_id)
+            if model is None:
+                return None
+
+            data = UserResponse.from_model(model)
+            return data
+        except Exception as e:
+            self.logger.log_error(e.__str__())
+
+        return None
+
     def get_users(self, params: GetUsersParams) -> List[UserResponse] | None:
         try:
+            total_users = self.user_repos.count_total_users()
+            if total_users == 0:
+                return []
+
             user_models = self.user_repos.get_users(params)
             if user_models is None:
                 return None
 
-            user_res = [UserResponse.from_model(user_model) for user_model in user_models]
+            user_res = [UserResponse.from_model(
+                user_model) for user_model in user_models]
             return user_res
+        except Exception as e:
+            self.logger.log_error(e.__str__())
+
+        return None
+
+    def count_total_users(self) -> int | None:
+        try:
+            total_users = self.user_repos.count_total_users()
+            return total_users
         except Exception as e:
             self.logger.log_error(e.__str__())
 

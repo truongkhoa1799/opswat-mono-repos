@@ -12,7 +12,8 @@ CREATE TABLE user (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
-    UNIQUE (email, username)
+    UNIQUE (email),
+    UNIQUE (username)
 );
 
 CREATE TABLE article (

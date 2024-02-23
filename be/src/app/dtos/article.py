@@ -1,6 +1,7 @@
 from typing import List
 
 from pydantic import BaseModel, Field
+from src.insfra.postgres.models import UserModel
 
 from src.app.dtos.base import BaseSearchParams
 from src.app.dtos.user import UserResponse
@@ -42,6 +43,14 @@ class GetArticlesParams(BaseSearchParams):
     pass
 
 
+class GetArticleParams(BaseSearchParams):
+    id: int = Field(
+        default=0,
+        title="id",
+        alias='id',
+    )
+
+
 class DeleteArticleParams(BaseSearchParams):
     id: int = Field(
         default=0,
@@ -60,7 +69,7 @@ class ArticleResponse(BaseModel):
     created_by: int
 
     @staticmethod
-    def from_model(model: ArticleModel, reactions: List[ReactionModel]):
+    def from_model(model: ArticleModel, reactions: List[ReactionModel] = []):
         favourite_count = 0
         for reaction in reactions:
             favourite_count += 1 if reaction.type == ReactionType.Favorite.value else 0

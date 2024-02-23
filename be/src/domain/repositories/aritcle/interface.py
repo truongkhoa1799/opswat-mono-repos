@@ -10,3 +10,7 @@ class ArticleRepositoryInterface(BasePostgresInterface[ArticleModel, CreateArtic
     @abstractmethod
     def get_articles(self, params: GetArticlesParams) -> List[ArticleModel] | None:
         pass
+
+    @abstractmethod
+    def count_total_articles(self) -> int | None:
+        pass

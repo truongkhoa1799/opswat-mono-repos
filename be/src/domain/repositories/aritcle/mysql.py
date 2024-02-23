@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import func
 from sqlmodel import Session, select
 
 from src.app.dtos.article import GetArticlesParams
@@ -18,10 +19,23 @@ class ArticlePostgresRepository(BasePostgres[ArticleModel, CreateArticleEntity],
     def get_articles(self, params: GetArticlesParams) -> List[ArticleModel] | None:
         try:
             with Session(self.engine) as session:
-                query = select(self.model).offset(params.offset).limit(params.limit)
+                query = select(self.model).offset(
+                    params.offset).limit(params.limit)
                 result = session.exec(query).all()
                 articles = [article for article in result]
                 return articles
+
+        except Exception as e:
+            self.logger.log_error(e.__str__())
+
+        return None
+
+    def count_total_articles(self) -> int | None:
+        try:
+            with Session(self.engine) as session:
+                query = select(func.count(self.model.id))
+                result = session.exec(query).one()
+                return result
 
         except Exception as e:
             self.logger.log_error(e.__str__())

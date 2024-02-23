@@ -51,8 +51,10 @@ class ArticleServices(metaclass=SingletonMeta):
 
             article_responses: List[ArticleResponse] = []
             for article_model in article_models:
-                reactions = self.reaction_repos.count_reactions_by_article_id(article_model.id)
-                article_res = ArticleResponse.from_model(article_model, reactions)
+                reactions = self.reaction_repos.count_reactions_by_article_id(
+                    article_model.id)
+                article_res = ArticleResponse.from_model(
+                    article_model, reactions)
                 article_responses.append(article_res)
 
             return article_responses
@@ -86,10 +88,20 @@ class ArticleServices(metaclass=SingletonMeta):
                 body=params.body
             )
 
-            new_model = self.article_repos.update(article_model, update_entity.model_dump())
+            new_model = self.article_repos.update(
+                article_model, update_entity.model_dump())
             article_response = ArticleResponse.from_model(new_model)
             return article_response
 
+        except Exception as e:
+            self.logger.log_error(e.__str__())
+
+        return None
+
+    def count_total_articles(self) -> int | None:
+        try:
+            total_articles = self.article_repos.count_total_articles()
+            return total_articles
         except Exception as e:
             self.logger.log_error(e.__str__())
 

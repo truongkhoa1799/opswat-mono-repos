@@ -6,7 +6,7 @@ from src.app.dtos.user import UserResponse
 
 @dataclass
 class UserPresenter:
-    id: int
+    id: str
     email: str
     username: str
     fullname: str
@@ -16,7 +16,7 @@ class UserPresenter:
     @staticmethod
     def from_dto(dto: UserResponse):
         presenter = UserPresenter(
-            id=dto.id,
+            id=str(dto.id),
             email=dto.email,
             username=dto.username,
             fullname=dto.fullname,
@@ -37,7 +37,7 @@ class UsersPresenter:
         users_presenter = [UserPresenter.from_dto(dto) for dto in dtos]
         presenter = UsersPresenter(
             users=users_presenter,
-            total=len(dtos)
+            total=0
         )
 
         return presenter

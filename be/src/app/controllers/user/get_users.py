@@ -20,9 +20,14 @@ class GetUsersController(BaseControllerWithRole):
 
     def execute(self) -> BasePresenter[UsersPresenter]:
         try:
+            total_users = self.user_services.count_total_users()
+            if total_users is None:
+                return BasePresenter.error(UserErrMsg.FAIL_GET_USERS.value)
+
             user_responses = self.user_services.get_users(self.params)
             if user_responses is not None:
                 presenters = UsersPresenter.from_dto(user_responses)
+                presenters.total = total_users
                 return BasePresenter.success(presenters)
 
         except Exception as e:

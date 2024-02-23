@@ -5,12 +5,12 @@ type Config = {
 
 const dev: Config = {
   env: "dev",
-  API_URL: "http://127.0.0.1:8000",
+  API_URL: "http://localhost:8000",
 };
 
 const prod: Config = {
   env: "prod",
-  API_URL: "http://127.0.0.1:8000",
+  API_URL: "http://localhost:8000",
 };
 
 const configs: { [key: string]: Config } = {

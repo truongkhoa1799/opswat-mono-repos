@@ -20,9 +20,9 @@ class CreateArticleController(BaseControllerWithRole):
 
     def execute(self) -> BasePresenter[ArticlePresenter]:
         try:
-            user_res = self.article_services.create_article(self.params)
-            if user_res is not None:
-                presenter = ArticlePresenter.from_dto(user_res)
+            article_res = self.article_services.create_article(self.params)
+            if article_res is not None:
+                presenter = ArticlePresenter.from_dto(article_res)
                 return BasePresenter.success(presenter)
 
         except Exception as e:

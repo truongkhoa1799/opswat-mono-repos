@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from fastapi.security import OAuth2PasswordRequestForm
+from src.app.presenters.user import UserPresenter
 
 from src.app.controllers.base import BaseController
 from src.app.presenters.auth import AuthPresenter
@@ -21,7 +22,8 @@ class LoginController(BaseController):
 
     def execute(self) -> BasePresenter[AuthPresenter]:
         try:
-            user_res = self.user_services.get_user_by_username(self.params.username)
+            user_res = self.user_services.get_user_by_username(
+                self.params.username)
             if user_res is None:
                 return BasePresenter.forbidden()
 
@@ -34,11 +36,15 @@ class LoginController(BaseController):
             if not is_authenticated:
                 return BasePresenter.forbidden()
 
+            user_presenter = UserPresenter.from_dto(user_res)
+
             access_token_expires = self.config.get("ACCESS_TOKEN_EXPIRE_DAYS")
             access_token_expires = timedelta(days=int(access_token_expires))
-            access_token = CryptoHelper.create_access_token(user_res, access_token_expires)
+            access_token = CryptoHelper.create_access_token(
+                user_presenter, access_token_expires)
 
-            presenter = AuthPresenter.from_user_response(user_res, access_token)
+            presenter = AuthPresenter.from_user_response(
+                user_res, access_token)
             return BasePresenter.success(presenter)
 
         except Exception as e:

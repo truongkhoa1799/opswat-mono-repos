@@ -18,3 +18,7 @@ class UserRepositoryInterface(BasePostgresInterface[UserModel, CreateUserEntity]
     @abstractmethod
     def get_users(self, params: GetUsersParams) -> List[UserModel] | None:
         pass
+
+    @abstractmethod
+    def count_total_users(self) -> int | None:
+        pass

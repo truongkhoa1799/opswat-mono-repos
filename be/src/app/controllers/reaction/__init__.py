@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Path, Depends
+from src.app.presenters.user import UserPresenter
 
 from src.app.controllers.base import BaseProcess
 from src.app.controllers.reaction.react_article import ReactArticleController
 from src.app.dtos.reaction import ReactionParams
-from src.app.dtos.user import UserResponse
 from src.app.middlewares.auth import AuthMiddleware
 from src.common.enums import ReactionType
 
@@ -17,7 +17,7 @@ router = APIRouter(
 
 @router.post("/{article_id}/favorite")
 async def favorite_article(
-    current_user: Annotated[UserResponse | None, Depends(AuthMiddleware.get_current_user)],
+    current_user: Annotated[UserPresenter | None, Depends(AuthMiddleware.get_current_user)],
     article_id: int = Path(title="The ID of the item to get")
 ):
     params = ReactionParams(
@@ -32,7 +32,7 @@ async def favorite_article(
 
 @router.delete("/{article_id}/favorite")
 async def favorite_article(
-    current_user: Annotated[UserResponse, Depends(AuthMiddleware.get_current_user)],
+    current_user: Annotated[UserPresenter, Depends(AuthMiddleware.get_current_user)],
     article_id: int = Path(title="The ID of the item to get")
 ):
     params = ReactionParams(

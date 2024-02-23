@@ -18,3 +18,7 @@ class ReactionRepositoryInterface(BasePostgresInterface[ReactionModel, CreateRea
     @abstractmethod
     def remove_by_article_id_user_id(self, params: ReactionParams) -> ReactionModel | None:
         pass
+
+    @abstractmethod
+    def remove_by_article_id(self, article_id: int) -> bool | None:
+        pass

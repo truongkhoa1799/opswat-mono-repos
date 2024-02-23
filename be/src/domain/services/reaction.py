@@ -56,3 +56,10 @@ class ReactionServices(metaclass=SingletonMeta):
             self.logger.log_error(e.__str__())
             return False
 
+    def remove_article_reactions(self, article_id: int) -> bool:
+        try:
+            result = self.reaction_repos.remove_by_article_id(article_id)
+            return result
+        except Exception as e:
+            self.logger.log_error(e.__str__())
+            return False
