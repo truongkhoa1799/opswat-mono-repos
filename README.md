@@ -1,5 +1,15 @@
 # opswat-mono-repos
 
+This is mono repos for User + Article Management
+
+## Software Specification:
+
+- python 3.12.0+ or NodeJS 18.15.0+
+- SQLModel for ORM
+- Database (Postgres 15+)
+- FastAPI for backend server
+- Fontend ReactJS + Material UI
+
 ## Source Architecture
 
 ### Summary
