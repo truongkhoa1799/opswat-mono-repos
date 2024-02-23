@@ -14,7 +14,10 @@ class UserPresenter:
     updated_at: str
 
     @staticmethod
-    def from_dto(dto: UserResponse):
+    def from_dto(dto: UserResponse | None):
+        if dto is None:
+            return None
+
         presenter = UserPresenter(
             id=str(dto.id),
             email=dto.email,

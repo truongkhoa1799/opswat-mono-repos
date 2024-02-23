@@ -51,10 +51,8 @@ class ArticleServices(metaclass=SingletonMeta):
 
             article_responses: List[ArticleResponse] = []
             for article_model in article_models:
-                reactions = self.reaction_repos.count_reactions_by_article_id(
-                    article_model.id)
-                article_res = ArticleResponse.from_model(
-                    article_model, reactions)
+                reactions = self.reaction_repos.count_reactions_by_article_id(article_model.id)
+                article_res = ArticleResponse.from_model(article_model, reactions)
                 article_responses.append(article_res)
 
             return article_responses
