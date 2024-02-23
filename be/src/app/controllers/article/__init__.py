@@ -12,7 +12,7 @@ from src.app.controllers.article.update_article import UpdateArticleController
 from src.app.controllers.base import BaseProcess
 from src.app.dtos.article import CreateArticleParams, UpdateArticleParams, GetArticlesParams, DeleteArticleParams, \
     GetArticleParams
-from src.app.middlewares.auth import AuthMiddleware
+from src.app.middlewares.auth import AuthMiddleware, oauth2_scheme
 
 router = APIRouter(
     prefix="/articles",
@@ -22,6 +22,7 @@ router = APIRouter(
 
 @router.get("/")
 async def get_articles(
+    token: Annotated[str, Depends(oauth2_scheme)],
     limit: int = Query(10, description="limit", ge=0, lt=100),
     offset: int = Query(0, description="offset", ge=0, lt=100),
 ):
@@ -32,6 +33,7 @@ async def get_articles(
 
 @router.get("/{article_id}")
 async def get_article(
+    token: Annotated[str, Depends(oauth2_scheme)],
     article_id: int = Path(title="The ID of the item to get")
 ):
     params = GetArticleParams(id=article_id)
@@ -41,6 +43,7 @@ async def get_article(
 
 @router.post("/")
 async def create_article(
+    token: Annotated[str, Depends(oauth2_scheme)],
     current_user: Annotated[UserPresenter | None, Depends(AuthMiddleware.get_current_user)],
     title: Annotated[str, Form()],
     body: Annotated[str, Form()],
@@ -53,6 +56,7 @@ async def create_article(
 
 @router.put("/{article_id}")
 async def update_article(
+    token: Annotated[str, Depends(oauth2_scheme)],
     current_user: Annotated[UserPresenter | None, Depends(AuthMiddleware.get_current_user)],
     title: Annotated[str, Form()],
     body: Annotated[str, Form()],
@@ -65,6 +69,7 @@ async def update_article(
 
 @router.delete("/{article_id}")
 async def delete_article(
+    token: Annotated[str, Depends(oauth2_scheme)],
     current_user: Annotated[UserPresenter | None, Depends(AuthMiddleware.get_current_user)],
     article_id: int = Path(title="The ID of the item to get")
 ):

@@ -1,28 +1,29 @@
 import functools
 import re
-from http import HTTPStatus, HTTPMethod
+from http import HTTPStatus
 from typing import Annotated
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.security.utils import get_authorization_scheme_param
-from jose import jwt, JWTError
+from jose import JWTError
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from starlette.datastructures import Headers
 from src.app.presenters.user import UserPresenter
 
-from src.app.dtos.user import UserResponse
 from src.app.middlewares.exceptions import UnauthorizedException
 from src.app.presenters.base import BasePresenter
-from src.common import Config
 from src.common.crypto_helper import CryptoHelper
 from src.common.messages import UserErrMsg
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
 WHITELIST_URLS = [
+    {"method": "get", "pattern": r"^/docs$"},
+    {"method": "get", "pattern": r"^/openapi.json$"},
+    {"method": "post", "pattern": r"^/api/auth/token$"},
     {"method": "post", "pattern": r"^/api/auth/login$"},
     {"method": "post", "pattern": r"^/api/users$"},
 ]

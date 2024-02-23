@@ -8,7 +8,7 @@ from src.app.controllers.user.create_user import CreateUserController
 from src.app.controllers.user.get_users import GetUsersController
 from src.app.controllers.user.delete_user import DeleteUserController
 from src.app.dtos.user import CreateUserParams, GetUsersParams, DeleteUserParams
-from src.app.middlewares.auth import AuthMiddleware
+from src.app.middlewares.auth import AuthMiddleware, oauth2_scheme
 
 router = APIRouter(
     prefix="/users",
@@ -35,6 +35,7 @@ async def create_user(
 
 @router.get("/")
 async def get_users(
+    token: Annotated[str, Depends(oauth2_scheme)],
     limit: int = Query(10, description="limit", ge=0, lt=100),
     offset: int = Query(0, description="offset", ge=0, lt=100),
 ):
@@ -45,6 +46,7 @@ async def get_users(
 
 @router.delete("/{email}")
 async def remove_users(
+    token: Annotated[str, Depends(oauth2_scheme)],
     current_user: Annotated[UserPresenter | None, Depends(AuthMiddleware.get_current_user)],
     email: str = Path(description="email", max_length=255,
                       regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
